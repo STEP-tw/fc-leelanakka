@@ -6,12 +6,11 @@ const readFiles = function(req, res, fileName) {
       res.statusCode = 404;
       res.end();
       return;
-    } else {
-      res.setHeader("Content-Type", "text/html");
-      res.write(data);
-      res.statusCode = 200;
-      res.end();
     }
+    res.setHeader("Content-Type", "text/html");
+    res.write(data);
+    res.statusCode = 200;
+    res.end();
   });
 };
 

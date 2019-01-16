@@ -2,10 +2,44 @@
 <html>
   <head>
     <title>Flower Catalog</title>
+    <script>
+      const hideImage = function(model) {
+        let jar = document.getElementById("wateringJar");
+        jar.style.visibility = model;
+      };
+      const hide = () => {
+        setTimeout(hideImage.bind(null, "visible"), 1000);
+        hideImage("hidden");
+      };
+    </script>
   </head>
   <body>
-    <h1 style="text-align: center; border-bottom: 2px solid black">Flower Catalog</h1>
-    <img src="freshorigins.jpg" alt="" />
-    <p>leela</p>
+    <h1 style="text-align: center; border-bottom: 2px solid black">
+      Flower Catalog
+    </h1>
+    <div style="display: flex">
+      <div><img src="freshorigins.jpg" alt="image" /></div>
+      <div>
+        <p>
+          <a href="https://en.wikipedia.org/wiki/Abeliophyllum" target="newtab"
+            >Abeliophyllum</a
+          >
+        </p>
+        <p>
+          <a href="https://en.wikipedia.org/wiki/Ageratum" target="newtab">
+            Ageratum</a
+          >
+        </p>
+        <p>
+          <img
+            src="animated-flower-image-0021.gif"
+            id="wateringJar"
+            alt="gif"
+            onclick="hide()"
+          />
+        </p>
+        <p><a href=""> Guest Book</a></p>
+      </div>
+    </div>
   </body>
 </html>
