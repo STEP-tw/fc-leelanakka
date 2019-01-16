@@ -2,16 +2,7 @@
 <html>
   <head>
     <title>Flower Catalog</title>
-    <script>
-      const hideImage = function(model) {
-        let jar = document.getElementById("wateringJar");
-        jar.style.visibility = model;
-      };
-      const hide = () => {
-        setTimeout(hideImage.bind(null, "visible"), 1000);
-        hideImage("hidden");
-      };
-    </script>
+    <script src="main.js"></script>
   </head>
   <body>
     <h1 style="text-align: center; border-bottom: 2px solid black">
@@ -20,16 +11,20 @@
     <div style="display: flex">
       <div><img src="freshorigins.jpg" alt="image" /></div>
       <div>
-        <p>
-          <a href="https://en.wikipedia.org/wiki/Abeliophyllum" target="newtab"
-            >Abeliophyllum</a
-          >
-        </p>
-        <p>
-          <a href="https://en.wikipedia.org/wiki/Ageratum" target="newtab">
-            Ageratum</a
-          >
-        </p>
+        <ul>
+          <li>
+            <a
+              href="https://en.wikipedia.org/wiki/Abeliophyllum"
+              target="newtab"
+              >Abeliophyllum</a
+            >
+          </li>
+          <li>
+            <a href="https://en.wikipedia.org/wiki/Ageratum" target="newtab">
+              Ageratum</a
+            >
+          </li>
+        </ul>
         <p>
           <img
             src="animated-flower-image-0021.gif"
