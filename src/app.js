@@ -1,9 +1,14 @@
 const fs = require("fs");
 
-const readFiles = function(res, fileName) {
-  fs.readFile(fileName, (err, data) => {
+const readFiles = function(req, res) {
+  let filePath = `.${req.url}`;
+  if (req.url === "/") {
+    filePath = "public/home.html";
+  }
+  fs.readFile(filePath, (err, data) => {
     if (err) {
       res.statusCode = 404;
+      res.write("it came");
       res.end();
       return;
     }
@@ -15,9 +20,7 @@ const readFiles = function(res, fileName) {
 };
 
 const app = (req, res) => {
-  readFiles(res, req.url.slice(1) || "flowerCatalog.html");
+  readFiles(req, res);
 };
-
-// Export a function that can act as a handler
 
 module.exports = app;
