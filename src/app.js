@@ -1,16 +1,18 @@
 const fs = require("fs");
 
+const send = function(res, statusCode, content) {
+  res.statusCode = statusCode;
+  if (content) res.write(content);
+  res.end();
+};
+
 const readFiles = function(res, filePath) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.statusCode = 404;
-      res.end();
-      return;
+      send(res, 404);
+    } else {
+      send(res, 200, data);
     }
-    res.setHeader("Content-Type", "text/html");
-    res.write(data);
-    res.statusCode = 200;
-    res.end();
   });
 };
 
