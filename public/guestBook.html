@@ -3,7 +3,7 @@
 <head>
   <title>Guest Book</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+  <link rel="stylesheet" href="style.css" />
   <script src="main.js"></script>
 </head>
 <h1 class="guestHeader">
@@ -16,9 +16,13 @@
 </h2>
   </p>
   <form>
-    Name: <input type="text" style="height: 30px;width: 150px"> <br> <br>
-    Comment: <input type="text" style="height: 75px; width: 200px"> <br>
-    <input type="button" value="Submit">
+    Name: <input type="text" style="height: 30px;width: 150px" class="name"> <br> <br>
+    Comment: <input type="text" style="height: 75px; width: 200px" class="Comment"> <br>
+    <input type="button" value="Submit" class="Submit">
   </form>
+  <p class="body"> 
+    <br>
+    DATETIME_NAME_COMMENTS_LIST
+  </p>
 </body>
 </html>
