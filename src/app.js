@@ -1,14 +1,9 @@
 const fs = require("fs");
 
-const readFiles = function(req, res) {
-  let filePath = `.${req.url}`;
-  if (req.url === "/") {
-    filePath = "public/home.html";
-  }
+const readFiles = function(res, filePath) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.statusCode = 404;
-      res.write("it came");
       res.end();
       return;
     }
@@ -19,8 +14,16 @@ const readFiles = function(req, res) {
   });
 };
 
+const filePathHandler = function(path) {
+  if (path == "/") {
+    return "./public/index.html";
+  }
+  return `./public${path}`;
+};
+
 const app = (req, res) => {
-  readFiles(req, res);
+  let filePath = filePathHandler(req.url);
+  readFiles(res, filePath);
 };
 
 module.exports = app;
