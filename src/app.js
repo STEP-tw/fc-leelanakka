@@ -1,17 +1,36 @@
 const fs = require("fs");
+const Sheeghra = require("./sheeghra");
+const app = new Sheeghra();
 
-const send = function(res, statusCode, content) {
+const readBody = (req, res, next) => {
+  let content = "";
+  req.on("data", chunk => (content += chunk));
+  req.on("end", () => {
+    req.body = content;
+    next();
+  });
+};
+
+const send = (res, content, statusCode = 200) => {
   res.statusCode = statusCode;
-  if (content) res.write(content);
+  res.write(content);
   res.end();
 };
 
-const readFiles = function(res, filePath) {
+const sendNotFound = function(req, res) {
+  res.statusCode = 404;
+  res.end();
+};
+
+const readFiles = function(req, res) {
+  let filePath = filePathHandler(req.url);
+  console.log(filePath, req.url);
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      send(res, 404);
+      send(res, "fileNotFound", 404);
     } else {
-      send(res, 200, data);
+      console.log("it came", req.url);
+      send(res, data, 200);
     }
   });
 };
@@ -23,9 +42,12 @@ const filePathHandler = function(path) {
   return `./public${path}`;
 };
 
-const app = (req, res) => {
-  let filePath = filePathHandler(req.url);
-  readFiles(res, filePath);
-};
+app.get("/", readFiles);
+app.get("/images/freshorigins.jpg", readFiles);
+app.get("/images/animated-flower-image-0021.gif", readFiles);
+app.get("/main.js", readFiles);
+app.get("/style.css", readFiles);
+app.get("/guestBook.html", readFiles);
+app.use(sendNotFound);
 
-module.exports = app;
+module.exports = app.handleRequest.bind(app);
