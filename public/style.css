@@ -5,9 +5,19 @@
 
 .guestHeader {
   text-align: center;
-  color: orange
+  color: orange;
 }
 
 .body {
-  border-top: 2px solid black
+  border-top: 2px solid black;
+}
+
+.name {
+  height: 30px;
+  width: 150px;
+}
+
+.comment {
+  height: 75px;
+  width: 200px;
 }
