@@ -1,6 +1,7 @@
 .heading {
   text-align: center;
   border-bottom: 2px solid black;
+  color: orange;
 }
 
 .guestHeader {
@@ -20,4 +21,9 @@
 .comment {
   height: 75px;
   width: 200px;
+}
+
+.paragraph {
+  margin-top: 300px;
+  padding: 20px;
 }
