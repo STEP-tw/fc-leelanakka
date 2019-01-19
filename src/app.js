@@ -21,7 +21,6 @@ const readBody = (req, res, next) => {
   req.on("data", chunk => (content += chunk));
   req.on("end", () => {
     req.body = content;
-    content = "";
     chunk = "";
     next();
   });
@@ -100,21 +99,9 @@ const postInGuestBook = function(req, res, next) {
 
 app.use(readBody);
 app.use(logRequest);
-app.get("/", readFiles);
-app.get("/images/freshorigins.jpg", readFiles);
-app.get("/images/animated-flower-image-0021.gif", readFiles);
-app.get("/main.js", readFiles);
-app.get("/style.css", readFiles);
-app.get("/guestBook.html", readFiles);
-app.get("/guestBook.html", handleGuestBook);
-app.get("/abeliophyllum.html", readFiles);
-app.get("/images/pbase-Abeliophyllum.jpg", readFiles);
-app.get("/images/pbase-agerantum.jpg", readFiles);
-app.get("/index.html", readFiles);
-app.get("/images/Abeliophyllum.pdf", readFiles);
-app.get("/images/Ageratum.pdf", readFiles);
-app.get("/ageratum.html", readFiles);
 app.post("/guestBook.html", postInGuestBook);
+app.get("/guestBook.html", handleGuestBook);
+app.use(readFiles);
 app.use(sendNotFound);
 
 module.exports = app.handleRequest.bind(app);
