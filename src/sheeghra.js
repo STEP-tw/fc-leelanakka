@@ -10,18 +10,23 @@ class Sheeghra {
   constructor() {
     this.routes = [];
   }
+
   use(handler) {
     this.routes.push({ handler });
   }
+
   get(url, handler) {
     this.routes.push({ method: "GET", url, handler });
   }
+
   post(url, handler) {
     this.routes.push({ method: "POST", url, handler });
   }
+
   error(handler) {
     this.errorRoute = handler;
   }
+
   handleRequest(req, res) {
     let matchingRoutes = this.routes.filter(r => isMatching(req, r));
     let remaining = [...matchingRoutes];

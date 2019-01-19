@@ -1,6 +1,11 @@
 const fs = require("fs");
 const Sheeghra = require("./sheeghra");
 const app = new Sheeghra();
+
+if (!fs.existsSync("./public/comments.json")) {
+  fs.writeFileSync("./public/comments.json", "[]");
+}
+
 let comments = fs.readFileSync("./public/comments.json", "utf8");
 comments = JSON.parse(comments);
 
