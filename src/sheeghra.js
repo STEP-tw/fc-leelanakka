@@ -35,7 +35,6 @@ class Sheeghra {
       if (!current) return;
       remaining = remaining.slice(1);
       console.log(current);
-      console.log("curretnt");
       current.handler(req, res, next);
     };
     next();

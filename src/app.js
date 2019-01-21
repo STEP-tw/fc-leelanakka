@@ -51,7 +51,7 @@ const sendNotFound = function(req, res) {
 
 const filePathHandler = function(path) {
   if (path == "/") {
-    return "./public/index.html";
+    return "./public/html/index.html";
   }
   return `./public${path}`;
 };
@@ -99,8 +99,8 @@ const postInGuestBook = function(req, res, next) {
 
 app.use(readBody);
 app.use(logRequest);
-app.post("/guestBook.html", postInGuestBook);
-app.get("/guestBook.html", handleGuestBook);
+app.post("/html/guestBook.html", postInGuestBook);
+app.get("/html/guestBook.html", handleGuestBook);
 app.use(readFiles);
 app.use(sendNotFound);
 
