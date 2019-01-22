@@ -1,6 +1,7 @@
 const fs = require("fs");
 const Sheeghra = require("./sheeghra");
 const app = new Sheeghra();
+const Comment = require("./comments.js");
 
 if (!fs.existsSync("./public/comments.json")) {
   fs.writeFileSync("./public/comments.json", "[]");
@@ -8,6 +9,7 @@ if (!fs.existsSync("./public/comments.json")) {
 
 let comments = fs.readFileSync("./public/comments.json", "utf8");
 comments = JSON.parse(comments);
+const comment = new Comment(comments);
 
 const logRequest = (req, res, next) => {
   console.log(req.method, req.url);
@@ -70,7 +72,7 @@ const readFiles = function(req, res) {
 const commentsInHtml = function(commentsList) {
   return commentsList
     .map(commentDetail => {
-      commentDetail = JSON.parse(commentDetail);
+      commentDetail = commentDetail;
       return `<p>${commentDetail.date} ${commentDetail.name} ${
         commentDetail.comment
       }</p>`;
@@ -81,18 +83,19 @@ const commentsInHtml = function(commentsList) {
 const handleGuestBook = function(req, res, next) {
   let filePath = filePathHandler(req.url);
   fs.readFile(filePath, (err, data) => {
-    let commentsList = commentsInHtml(comments);
+    let commentsList = commentsInHtml(comment.getComments());
+    // console.log(123456, commentsList);
     if (err) send(res, "fileNotFound", 404);
     send(res, data + commentsList);
   });
-  return;
 };
 
 const postInGuestBook = function(req, res, next) {
   let commentDetails = readArgs(req.body);
   commentDetails.date = new Date().toLocaleString();
-  comments.unshift(JSON.stringify(commentDetails));
-  fs.writeFile("./public/comments.json", JSON.stringify(comments), err => {
+  // comments.unshift(commentDetails);
+  comment.addComments(commentDetails);
+  fs.writeFile("./public/comments.json", comment.commentsInString(), err => {
     handleGuestBook(req, res, next);
   });
 };

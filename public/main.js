@@ -8,13 +8,25 @@ const hide = () => {
   setTimeout(hideImage.bind(null, "visible"), 1000);
 };
 
-const insertComments = function() {
-  let text = "";
-  let form = document.getElementById("form");
-  let date = new Date().toLocaleString().split(" ")[0];
-  for (let index = 0; index < form.length - 1; index++) {
-    text += date+ form.elements[index].value;
-  }
-  document.getElementById("comments").innerText = text;
-  // "finally it came to comments section";
+const commentsInHtml = function(commentsList) {
+  return commentsList
+    .map(commentDetail => {
+      return `<p>${commentDetail.date} ${commentDetail.name} ${
+        commentDetail.comment
+      }</p>`;
+    })
+    .join("");
+};
+
+const refreshComments = function() {
+  fetch("../comments.json")
+    .then(function(res) {
+      return res.text();
+    })
+    .then(function(comments) {
+      let commentsDiv = document.getElementById("comments");
+      comments = JSON.parse(comments);
+      comments = commentsInHtml(comments);
+      commentsDiv.innerHTML = comments;
+    });
 };
