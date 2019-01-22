@@ -8,25 +8,14 @@ const hide = () => {
   setTimeout(hideImage.bind(null, "visible"), 1000);
 };
 
-const commentsInHtml = function(commentsList) {
-  return commentsList
-    .map(commentDetail => {
-      return `<p>${commentDetail.date} ${commentDetail.name} ${
-        commentDetail.comment
-      }</p>`;
-    })
-    .join("");
-};
-
 const refreshComments = function() {
-  fetch("../comments.json")
+  fetch("/comments")
     .then(function(res) {
       return res.text();
     })
     .then(function(comments) {
+      console.log(comments);
       let commentsDiv = document.getElementById("comments");
-      comments = JSON.parse(comments);
-      comments = commentsInHtml(comments);
       commentsDiv.innerHTML = comments;
     });
 };

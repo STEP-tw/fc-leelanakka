@@ -72,7 +72,6 @@ const readFiles = function(req, res) {
 const commentsInHtml = function(commentsList) {
   return commentsList
     .map(commentDetail => {
-      commentDetail = commentDetail;
       return `<p>${commentDetail.date} ${commentDetail.name} ${
         commentDetail.comment
       }</p>`;
@@ -84,26 +83,29 @@ const handleGuestBook = function(req, res, next) {
   let filePath = filePathHandler(req.url);
   fs.readFile(filePath, (err, data) => {
     let commentsList = commentsInHtml(comment.getComments());
-    // console.log(123456, commentsList);
     if (err) send(res, "fileNotFound", 404);
-    send(res, data + commentsList);
+    send(res, data + commentsList+"</div>");
   });
 };
 
 const postInGuestBook = function(req, res, next) {
   let commentDetails = readArgs(req.body);
   commentDetails.date = new Date().toLocaleString();
-  // comments.unshift(commentDetails);
   comment.addComments(commentDetails);
   fs.writeFile("./public/comments.json", comment.commentsInString(), err => {
     handleGuestBook(req, res, next);
   });
 };
 
+const renderComments = function(req, res, next) {
+  send(res, commentsInHtml(comment.getComments()));
+};
+
 app.use(readBody);
 app.use(logRequest);
 app.post("/html/guestBook.html", postInGuestBook);
 app.get("/html/guestBook.html", handleGuestBook);
+app.get("/comments", renderComments);
 app.use(readFiles);
 app.use(sendNotFound);
 
