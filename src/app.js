@@ -81,20 +81,28 @@ const commentsInHtml = function(commentsList) {
 
 const doNothing = () => {};
 
-const readCookies = (req, res, next) => {
-  const cookie = req.headers["cookie"];
-  req.cookie = cookie;
-  let userID;
-  if (!cookie) {
-    userID = new Date().getTime();
-    res.setHeader("Set-Cookie", `userId=${userID}`);
-  } else {
-    userID = cookie.split("=")[1];
-  }
+const createUserCookie = function(res) {
+  let userID = new Date().getTime();
+  res.setHeader("Set-Cookie", `userId=${userID}`);
+};
+
+const updateUserCookies = function(req) {
+  let cookie = req.headers["cookie"];
+  let userID = cookie.split("=")[1];
   if (!userIDs.includes(userID)) {
     userIDs.push(userID);
     console.log(userIDs, "these are userIds");
     fs.writeFile("./src/userIDs.json", JSON.stringify(userIDs), doNothing);
+  }
+};
+
+const readCookies = (req, res, next) => {
+  const cookie = req.headers["cookie"];
+  req.cookie = cookie;
+  if (!cookie) {
+    createUserCookie(res);
+  } else {
+    updateUserCookies(req);
   }
   next();
 };
