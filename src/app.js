@@ -2,6 +2,7 @@ const fs = require("fs");
 const Sheeghra = require("./sheeghra");
 const app = new Sheeghra();
 const Comment = require("./comments.js");
+const userIDs = require("./userIDs.json");
 
 if (!fs.existsSync("./public/comments.json")) {
   fs.writeFileSync("./public/comments.json", "[]");
@@ -36,7 +37,6 @@ const readArgs = text => {
     .split("&")
     .map(splitKeyValue)
     .forEach(assignKeyValueToArgs);
-  console.log(args);
   return args;
 };
 
@@ -79,12 +79,32 @@ const commentsInHtml = function(commentsList) {
     .join("");
 };
 
+const doNothing = () => {};
+
+const readCookies = (req, res, next) => {
+  const cookie = req.headers["cookie"];
+  req.cookie = cookie;
+  let userID;
+  if (!cookie) {
+    userID = new Date().getTime();
+    res.setHeader("Set-Cookie", `userId=${userID}`);
+  } else {
+    userID = cookie.split("=")[1];
+  }
+  if (!userIDs.includes(userID)) {
+    userIDs.push(userID);
+    console.log(userIDs, "these are userIds");
+    fs.writeFile("./src/userIDs.json", JSON.stringify(userIDs), doNothing);
+  }
+  next();
+};
+
 const handleGuestBook = function(req, res, next) {
   let filePath = filePathHandler(req.url);
   fs.readFile(filePath, (err, data) => {
     let commentsList = commentsInHtml(comment.getComments());
     if (err) send(res, "fileNotFound", 404);
-    send(res, data + commentsList+"</div>");
+    send(res, data + commentsList + "</div>");
   });
 };
 
@@ -101,6 +121,7 @@ const renderComments = function(req, res, next) {
   send(res, commentsInHtml(comment.getComments()));
 };
 
+app.use(readCookies);
 app.use(readBody);
 app.use(logRequest);
 app.post("/html/guestBook.html", postInGuestBook);
