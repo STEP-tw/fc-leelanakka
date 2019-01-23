@@ -15,8 +15,12 @@
 </h2>
   </p>
   <form id = 'form' method="POST" >
-    Name: <input name="name" type="text"  class="name"> <br> <br>
-    Comment: <input name="comment" type="text"  class="comment"> <br> 
+    <span>
+    Name: <input name="name" type="text" id="_name">
+    <button id="login" type="button" onclick="openCommentsPage()">Login</button>
+    </span>
+    <br> <br>
+    <p id="commentDiv"></p>
     <input type="submit" class="Submit" >
   </form>
   <h2>Comments <span><button onclick="refreshComments()">&#x21bb;</button></span></h2>

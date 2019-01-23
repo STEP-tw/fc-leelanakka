@@ -19,3 +19,15 @@ const refreshComments = function() {
       commentsDiv.innerHTML = comments;
     });
 };
+
+const openCommentsPage = function() {
+  let nameDiv = document.getElementById("_name");
+  let commentFormDiv = document.getElementById("commentDiv");
+  let loginDiv = document.getElementById("login");
+  loginDiv.onclick = location.reload.bind(location);
+  if (nameDiv.value == "") {
+    return;
+  }
+  loginDiv.innerText = "Logout";
+  commentFormDiv.innerHTML = `Comment: <input name="comment" type="text"  class="comment"></input>`;
+};
