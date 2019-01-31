@@ -14,20 +14,30 @@ const refreshComments = function() {
       return res.text();
     })
     .then(function(comments) {
-      console.log(comments);
       let commentsDiv = document.getElementById("comments");
       commentsDiv.innerHTML = comments;
     });
 };
 
-const openCommentsPage = function() {
-  let nameDiv = document.getElementById("_name");
-  let commentFormDiv = document.getElementById("commentDiv");
-  let loginDiv = document.getElementById("login");
-  loginDiv.onclick = location.reload.bind(location);
-  if (nameDiv.value == "") {
-    return;
-  }
-  loginDiv.innerText = "Logout";
-  commentFormDiv.innerHTML = `Comment: <input name="comment" type="text"  class="comment"></input>`;
+const convertToHtml = function(commentsDetails) {
+  return commentsDetails
+    .map(commentData => {
+      commentData = JSON.parse(commentData);
+      let date = new Date(commentData.date).toLocaleString();
+      return `<p>${date} <b>${commentData.name}</b>
+		${commentData.comment}</p>`;
+    })
+    .join("");
+};
+
+const updateComments = function() {
+  let comment = document.getElementById("comment").value;
+  fetch("/updateComment", {
+    method: "POST",
+    body: `comment=${comment}`
+  }).then(comments => {
+    let commentsDiv = document.getElementById("comments");
+    commentsDiv.innerHTML = convertToHtml(comments);
+  });
+  document.getElementById("comment").value = "";
 };

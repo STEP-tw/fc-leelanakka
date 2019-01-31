@@ -2,7 +2,7 @@ const fs = require("fs");
 const Sheeghra = require("./sheeghra");
 const app = new Sheeghra();
 const Comment = require("./comments.js");
-const userIDs = require("./userIDs.json");
+const partialHtmls = require("./partialHtml.js");
 
 if (!fs.existsSync("./public/comments.json")) {
   fs.writeFileSync("./public/comments.json", "[]");
@@ -79,49 +79,40 @@ const commentsInHtml = function(commentsList) {
     .join("");
 };
 
-const doNothing = () => {};
-
-const createUserCookie = function(res) {
-  let userID = new Date().getTime();
-  res.setHeader("Set-Cookie", `userId=${userID}`);
+const redirect = function(res, location) {
+  res.statusCode = 301;
+  res.setHeader("Location", location);
+  res.end();
 };
 
-const updateUserCookies = function(req) {
-  let cookie = req.headers["cookie"];
-  let userID = cookie.split("=")[1];
-  if (!userIDs.includes(userID)) {
-    userIDs.push(userID);
-    console.log(userIDs, "these are userIds");
-    fs.writeFile("./src/userIDs.json", JSON.stringify(userIDs), doNothing);
-  }
-};
-
-const readCookies = (req, res, next) => {
-  const cookie = req.headers["cookie"];
-  req.cookie = cookie;
-  if (!cookie) {
-    createUserCookie(res);
-  } else {
-    updateUserCookies(req);
-  }
-  next();
+const setCookie = function(res, cookie) {
+  res.setHeader("Set-Cookie", "username=" + cookie);
 };
 
 const handleGuestBook = function(req, res, next) {
   let filePath = filePathHandler(req.url);
-  fs.readFile(filePath, (err, data) => {
+  const cookie = req.headers.cookie;
+  let formToReplace = partialHtmls.partialHtmls.loginForm;
+  if (cookie != undefined && cookie != "username=") {
+    formToReplace = partialHtmls.partialHtmls.logOutForm(cookie.split("=")[1]);
+  }
+  fs.readFile(filePath, "utf8", (err, data) => {
     let commentsList = commentsInHtml(comment.getComments());
-    if (err) send(res, "fileNotFound", 404);
-    send(res, data + commentsList + "</div>");
+    let content = data.replace("##form##", formToReplace);
+    send(res, content + commentsList + "</div>");
   });
 };
 
+const parseNameAndComment = text => text.split("+").join(" ");
+
 const postInGuestBook = function(req, res, next) {
   let commentDetails = readArgs(req.body);
+  commentDetails.name = req.headers.cookie.split("=")[1];
+  commentDetails.comment = parseNameAndComment(commentDetails.comment);
   commentDetails.date = new Date().toLocaleString();
   comment.addComments(commentDetails);
   fs.writeFile("./public/comments.json", comment.commentsInString(), err => {
-    handleGuestBook(req, res, next);
+    send(res, commentsInHtml(res, comment.commentsInString()));
   });
 };
 
@@ -129,12 +120,23 @@ const renderComments = function(req, res, next) {
   send(res, commentsInHtml(comment.getComments()));
 };
 
-app.use(readCookies);
+const login = function(req, res, next) {
+  setCookie(res, parseNameAndComment(req.body.split("=")[1]));
+  redirect(res, "/html/guestBook.html");
+};
+
+const logout = function(req, res) {
+  res.setHeader("Set-Cookie", 'username=; expires=""');
+  redirect(res, "/html/guestBook.html");
+};
+
 app.use(readBody);
 app.use(logRequest);
-app.post("/html/guestBook.html", postInGuestBook);
+app.post("/login", login);
+app.post("/logout", logout);
 app.get("/html/guestBook.html", handleGuestBook);
 app.get("/comments", renderComments);
+app.post("/updateComment", postInGuestBook);
 app.use(readFiles);
 app.use(sendNotFound);
 

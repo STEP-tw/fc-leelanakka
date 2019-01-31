@@ -34,7 +34,6 @@ class Sheeghra {
       let current = remaining[0];
       if (!current) return;
       remaining = remaining.slice(1);
-      console.log(current);
       current.handler(req, res, next);
     };
     next();
