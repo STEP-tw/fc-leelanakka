@@ -72,9 +72,9 @@ const readFiles = function(req, res) {
 const commentsInHtml = function(commentsList) {
   return commentsList
     .map(commentDetail => {
-      return `<p>${commentDetail.date} ${commentDetail.name} ${
-        commentDetail.comment
-      }</p>`;
+      return `<p><tr><td>${commentDetail.date}</td><td> <b>${
+        commentDetail.name
+      } </b></td><td>${commentDetail.comment}</td></tr></p>`;
     })
     .join("");
 };
@@ -86,7 +86,7 @@ const redirect = function(res, location) {
 };
 
 const setCookie = function(res, cookie) {
-  res.setHeader("Set-Cookie", "username=" + cookie);
+  res.setHeader("Set-Cookie", `username=${cookie}`);
 };
 
 const handleGuestBook = function(req, res, next) {
@@ -97,9 +97,8 @@ const handleGuestBook = function(req, res, next) {
     formToReplace = partialHtmls.partialHtmls.logOutForm(cookie.split("=")[1]);
   }
   fs.readFile(filePath, "utf8", (err, data) => {
-    let commentsList = commentsInHtml(comment.getComments());
     let content = data.replace("##form##", formToReplace);
-    send(res, content + commentsList + "</div>");
+    send(res, content);
   });
 };
 
@@ -112,7 +111,7 @@ const postInGuestBook = function(req, res, next) {
   commentDetails.date = new Date().toLocaleString();
   comment.addComments(commentDetails);
   fs.writeFile("./public/comments.json", comment.commentsInString(), err => {
-    send(res, commentsInHtml(res, comment.commentsInString()));
+    send(res, commentsInHtml(comment.getComments()));
   });
 };
 
